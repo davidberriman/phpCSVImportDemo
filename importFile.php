@@ -48,13 +48,17 @@ require_once("connect.php");
 	
 	$importer = new FileImporter();
 	
-	
-	if(!$importer->importCSV($file))
+	if($importer->importCSV($file))
 	{
-		echo "ERROR - ". $importer->error. PHP_EOL;
+		echo "The file data was sucessfully imported.". PHP_EOL;
+		echo "Number of lines processed      : ". $importer->numberProcessed .  PHP_EOL;
+		echo "Number of successfull imports  : ". $importer->numberImported .  PHP_EOL;
+		echo "Number of errors               : ". $importer->numberFailed .  PHP_EOL;
+		echo "Report found at                : ". $importer->reportFile .  PHP_EOL;
+		echo "Errors                         : ". $importer->getErrors() .  PHP_EOL;
 	}else
 	{
-		echo "The file data was sucessfully imported.";
+		echo $importer->error. PHP_EOL;
 	}
 
 

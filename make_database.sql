@@ -22,3 +22,8 @@ CREATE TABLE tblProductData (
   UNIQUE KEY (strProductCode)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Stores product data';
 
+ALTER TABLE tblProductData 
+ADD intProductStock INT NULL ,
+ADD fltProductCost FLOAT NULL, 
+ADD `strDiscontinued` VARCHAR( 3 ) NULL ;  
+
