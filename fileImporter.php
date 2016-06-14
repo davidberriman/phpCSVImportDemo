@@ -99,10 +99,12 @@ class FileImporter
 		(strProductCode, strProductName, strProductDesc, intProductStock, fltProductCost, strDiscontinued) 
 		VALUES (?, ?, ?, ?, ?, ?) ";
 		
-		if (!$stmt = $mysqli->prepare($sql)) 
+		$stmt = $mysqli->prepare($sql);
+		
+		if ( $stmt == false || $stmt->error) 
 		{	
+			$this-> error = "ERROR - could not insert into the database (" . $mysqli->errno . ") ". $mysqli->error . PHP_EOL.  $Database->error. PHP_EOL;
 			$mysqli->close();
-			$this-> error = "ERROR - could not insert into the database". PHP_EOL.  $Database->error. PHP_EOL;
 			return false;
 		}
 		
@@ -116,7 +118,7 @@ class FileImporter
 		
 		foreach ($this->array as &$value) 
 		{
-			$this->processLine($value, $stmt, $stmt, $sql, $clean);
+			$this->processLine($value, $stmt, $sql, $clean);
 		}
 		
 		// close databse connections
@@ -241,10 +243,12 @@ class FileImporter
 	// -------------------------------------------------------------------
 	private function insertIntoDatabase($stmt, $sql, $array, $clean)
 	{
+		echo "Processing: ".print_r($array);
 							
-		if ($stmt == false || $stmt->error) 
+		if ($stmt == false) 
 		{
-			error_log("EEROR - Class: FileImporter  ;  Method : insertIntoDatabase  ; error : stmt was not valid ".$stmt->error);
+			$this->makeOutputArray('reason', "Error inserting into database : ".$stmt->error);
+			unset($stmt->error); // unset error to prevent persisting
 			return false;
 		}
 
@@ -258,17 +262,19 @@ class FileImporter
 						$clean->clean($array[4]), 
 						$clean->clean($array[5]));
 		
-		if ( $stmt == false || $stmt->error) 
+		if ( $stmt == false) 
 		{
-			error_log("EEROR - Class: FileImporter  ;  Method : insertIntoDatabase (bind_param)  ; error : stmt was not valid ".$stmt->error);
+			$this->makeOutputArray('reason', "Error inserting into database : ".$stmt->error);
+			unset($stmt->error); // unset error to prevent persisting
 			return false;
 		}
 		
 		$stmt->execute();
 		
-		if ( $stmt == false || $stmt->error) 
+		if ( $stmt == false) 
 		{
-			error_log("EEROR - Class: FileImporter  ;  Method : insertIntoDatabase (execute) ; error : stmt was not valid ".$stmt->error);
+			$this->makeOutputArray('reason', "Error inserting into database : ".$stmt->error);
+			unset($stmt->error); // unset error to prevent persisting
 			return false;
 		}		
 		
