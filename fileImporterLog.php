@@ -248,6 +248,9 @@ class FileImporterLog
 		$output .= "tr:nth-child(even) {
 						background-color: #f2f2f2;
 					}";
+		$output .= "td:nth-child(4) {
+    					max-width: 200px;
+					}";
 		$output .= ".ERROR {
 						background-color: #f2dede;
 					}";

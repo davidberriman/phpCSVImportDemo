@@ -157,23 +157,25 @@ class FileImporter
 			$this->makeOutputArray('reason', "Data could not be converted into an array");
 			$process = false;
 		}
-					
-		if(count($array) != 6)
+			
+		if($process && count($array) != 6)
 		{
 			$this->makeOutputArray('reason', "Data had incorrect number of columns");
 			$process = false;
 		}
 		
-		if(!$this->isValid($array))
+		// check data is valid
+		if($process && !$this->isValid($array))
 		{
 			$process = false;
-		}
-		
-		if(!$this->meetsImportRules($array))
+		}else
 		{
-			$process = false;
+			// if it is then check it meets the import criteria
+			if($process && !$this->meetsImportRules($array))
+			{
+				$process = false;
+			}
 		}
-
 		
 		// do not process any further in test mode
 		if($test == "TEST=Y")
@@ -225,7 +227,7 @@ class FileImporter
 			$productCost  = $array[4];
 			if($productCost > 1000)
 			{
-				$this-> error = "Does not meet criteria for import - item cost: {$productCost} is greater than 1000" . PHP_EOL;
+				$this->makeOutputArray('reason', "Does not meet criteria for import - item cost: {$productCost} is greater than 1000");
 				return false;
 			}
 		}
@@ -236,8 +238,8 @@ class FileImporter
 			$productCost  = $array[4];
 			if($productStock < 10 && $productCost < 5)
 			{
-				$this-> error = "Does not meet criteria for import - Item stock: {$productStock} & item cost: {$productCost} (costs < 5 & stock < 10)" . PHP_EOL;
-				$process = false;
+				$this->makeOutputArray('reason', "Does not meet criteria for import - Item stock: {$productStock} & item cost: {$productCost} (costs < 5 & stock < 10)");
+				return false;
 			}
 		}
 		
