@@ -2,6 +2,9 @@
 
 require_once("fileImporter.php");
 require_once("connect.php");
+require_once("fileImporterLog.php");
+
+ini_set('error_reporting', E_ALL);
 
 # ========================================================================#
 #
@@ -19,7 +22,17 @@ require_once("connect.php");
 #
 # ========================================================================#
 
-	$filename = $argv[1];
+	$filename = $argv[1];  //  csvFileName.csv  (csv fiel for importing into database)
+	$test = $argv[2];      //  either TEST=Y or TEST=N (test mode)
+	
+	if(isset($argv[3]))
+	{
+		$logname = $argv[3];   //  name of log file  (optional)	
+	}else
+	{
+		$logname = "";	
+	}
+	
 
 	// check that we have a file name with directory passed into the script
 	if(!isset($filename))
@@ -34,10 +47,15 @@ require_once("connect.php");
 		die("ERROR - The file specified could not be found. Please ensure you enter the full directory with file name.". PHP_EOL);
 	}
 	
+	// 
+	$test = strtoupper($test);
+	if($test != "TEST=Y" && $test != "TEST=N")
+	{
+		die("ERROR - The third input parameter needs to be either TEST=Y or TEST=N.". PHP_EOL);	
+	}
 	
 	// copy contents of file to variable for manipulating
 	$file = file_get_contents($filename);
-	
 	
 	// check that the file has sucessfully populated the variable
 	if(!isset($file))
@@ -48,14 +66,31 @@ require_once("connect.php");
 	
 	$importer = new FileImporter();
 	
-	if($importer->importCSV($file))
+	if($importer->importCSV($file, $test))
 	{
 		echo "The file data was sucessfully imported.". PHP_EOL;
 		echo "Number of lines processed      : ". $importer->numberProcessed .  PHP_EOL;
 		echo "Number of successfull imports  : ". $importer->numberImported .  PHP_EOL;
 		echo "Number of errors               : ". $importer->numberFailed .  PHP_EOL;
-		echo "Report found at                : ". $importer->reportFile .  PHP_EOL;
-		echo "Errors                         : ". $importer->getErrors() .  PHP_EOL;
+		
+		// make a log object
+		$importLog = new FileImporterLog();
+				
+		// create a log file
+		if($importLog->logResults( $importer->processedRecords, $logname, $importer->numberProcessed, $importer->numberImported, $importer->numberFailed))
+		{
+			echo "----------------------------------------------".  PHP_EOL;
+			echo "A report was created in the log folder: ".  PHP_EOL;
+			echo $importLog->filename .  PHP_EOL;
+			echo "----------------------------------------------".  PHP_EOL;
+		}else
+		{
+			echo "----------------------------------------------".  PHP_EOL;
+			echo "An error occured creating the report: " .  PHP_EOL;
+			echo $importLog->error .  PHP_EOL;
+			echo "----------------------------------------------".  PHP_EOL;
+		}
+		
 	}else
 	{
 		echo $importer->error. PHP_EOL;

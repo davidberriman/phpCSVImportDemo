@@ -1,1 +1,0 @@
-I am unsure if you want the dtmDiscontinued column changing from a datetime to a string to hold the "Yes" value. Storing the data that an item was discontinued seems sensible so I've made an additional column for the discontinued "Yes" value. 

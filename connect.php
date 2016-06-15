@@ -3,12 +3,12 @@
 #
 #  Author:    David Berriman
 #  Version:	  1.0
-#  Date:      07/05/2016
+#  Date:      14/06/2016
 #  Purpose:   Make a database connection
 #  Plblic functions: 
 #  					  getConnection : get connection
 #  Usage Example:
-#                     require_once("include/Connect.php");
+#                     require_once("connect.php");
 #                     $Database = new Connect();
 #                     $mysqli = $Database->getConnection();
 #
