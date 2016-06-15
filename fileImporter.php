@@ -25,8 +25,8 @@ class FileImporter
 	// Class variables
 	// ------------------------------------------------------
 	private $array;
+	private $processedRecords;
 	
-	public  $processedRecords;
 	public  $error;
 	public  $numberProcessed = 0;
 	public  $numberImported = 0;
@@ -53,6 +53,18 @@ class FileImporter
 		
 		return true;
 	}
+	
+	
+	
+	
+	// -------------------------------------------------------------------
+	// Return array with results from processing
+	// -------------------------------------------------------------------
+	public function getResults()
+	{
+		return $this->processedRecords;	
+	}
+	
 	
 	
 	// -------------------------------------------------------------------
