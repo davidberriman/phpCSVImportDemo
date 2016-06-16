@@ -195,11 +195,11 @@ class FileImporter
 			if($process)
 			{
 				$this->numberImported++;
-				$this->makeOutputArray('output', "SUCCESS");
+				$this->makeOutputArray('outcome', "SUCCESS");
 			}else
 			{
 				$this->numberFailed++;
-				$this->makeOutputArray('output', "ERROR");
+				$this->makeOutputArray('outcome', "ERROR");
 			}
 			return true;	
 		}
@@ -210,16 +210,16 @@ class FileImporter
 			if($this->insertIntoDatabase($mysqli, $array, $clean))
 			{
 				$this->numberImported++;
-				$this->makeOutputArray('output', "SUCCESS");
+				$this->makeOutputArray('outcome', "SUCCESS");
 			}else
 			{
 				$this->numberFailed++;
-				$this->makeOutputArray('output', "ERROR");
+				$this->makeOutputArray('outcome', "ERROR");
 			}
 		}else
 		{
 			$this->numberFailed++;
-			$this->makeOutputArray('output', "ERROR");
+			$this->makeOutputArray('outcome', "ERROR");
 		}
 	}
 	
@@ -261,14 +261,15 @@ class FileImporter
 	
 	// -------------------------------------------------------------------
 	// Check each of the values in the array are the correct data type
-	// 
 	// -------------------------------------------------------------------
 	private function isValid($array)
 	{
 		// check item 3 is int 
 		if(isset($array[3]))
 		{
-			if(!is_numeric($array[3]) && !is_int($array[3]))
+			// item is really a string so ctype_digit will check that it is just numbers 
+			// in that string eg. is_int
+			if(!ctype_digit($array[3]))
 			{
 				$this->makeOutputArray('reason', "Data in column 4 was not an integer");
 				return false;
@@ -276,7 +277,7 @@ class FileImporter
 			
 		}
 		
-		// get float value then compare ($array[4] is the same to ensure we have a float
+		// check item 4 is numeric
 		if( isset($array[4]))
 		{
 			// check item 4 is float				
@@ -349,7 +350,7 @@ class FileImporter
 	// -------------------------------------------------------------------
 	private function insertIntoDatabase($mysqli, $array, $clean)
 	{	
-		// create SQL now and use it in the loop
+		// create prepared SQL
 		$sql =" INSERT INTO tblProductData 
 		(strProductCode, strProductName, strProductDesc, intProductStock, fltProductCost, strDiscontinued, dtmDiscontinued) 
 		VALUES (?, ?, ?, ?, ?, ?, ?) ";
@@ -362,7 +363,8 @@ class FileImporter
 			return false;
 		}
 		
-		// (strProductCode, strProductName, strProductDesc, intProductStock, fltProductCost, strDiscontinued) 
+		// (strProductCode, strProductName, strProductDesc, intProductStock, fltProductCost, strDiscontinued)
+		// sanatize data before inserting it into the database so nothing nasty is entered
 		$productCode  = $clean->clean($array[0]);
 		$productName  = $clean->clean($array[1]);
 		$productDesc  = $clean->clean($array[2]);
@@ -378,8 +380,6 @@ class FileImporter
 			$discontinuedDate = NULL;
 		}
 		
-		// sanatize data and insert it into the database
-		// so nothing nasty is entered
 		$stmt->bind_param('sssidss', 
 						$productCode, 
 						$productName, 

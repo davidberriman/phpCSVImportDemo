@@ -47,7 +47,7 @@ class FileImporterLog
         // check data is in expected format
         if(!is_array($data))
         {    
-            $this->error = "ERROR - the data supplied was not in the expected format. Expected array but recived: ". gettype($data);
+            $this->error = "ERROR - the data supplied was not in the expected format. Expected array but received: ". gettype($data);
             return false;
         }
 		
@@ -60,7 +60,10 @@ class FileImporterLog
         // otherwise create a name with the date
         if(isset($filename) && $filename != "")
         {
-            $this->checkFilename($filename);
+            if(!$this->checkFilename($filename))
+			{
+				$this->createFilename();
+			}
         }else
         {
             $this->createFilename();
@@ -69,13 +72,19 @@ class FileImporterLog
         // create the output
         if(!$html = $this->createOutput($data, $processed, $imported, $failed))
         {
+        	$this->error = "ERROR - could not generate report.";
 			return false;
         }
 		
 		if(!file_put_contents($this->filename, $html))
 		{
-			$this->error = "ERROR - could not write data to directory: ". $this->filename;
-			return false;
+            // try saving with a default filename
+            $this->createFilename();
+            if(!file_put_contents($this->filename, $html))
+            {
+                $this->error = "ERROR - could not write data to directory: ". $this->filename;
+                return false;
+            }			
 		}
 	
 		return true;
@@ -91,15 +100,18 @@ class FileImporterLog
         $output = "";
         $output .= $this->returnHead();
         $output .= "<body>";
-		
+		$output .= "<div class=\"container\">";
         $output .= $this->returnTitle();
 		
 		$output .= $this->returnSummary($processed, $imported, $failed);
 		
+		$output .= "<h2>Process Report</h2>";
+		
 		$output .= $this->returnTableHTML($data);
 
-        $output .= "<body>";
-        $output .= "<html>";
+		$output .= "</div>";
+        $output .= "</body>";
+        $output .= "</html>";
         return $output;
     }
 	
@@ -110,7 +122,11 @@ class FileImporterLog
     {
         $output = "";
         $output .= '<table>';
-		$output .= '<caption>Process Summary</caption> ';
+		$output .= '<thead>';
+        $output .= '<tr>';
+		$output .= '<th colspan="2">Process Summary</th>';
+        $output .= '</tr>';
+        $output .= '</thead>';
         $output .= '<tbody> ';
         $output .= '<tr>';
         $output .= '<td>Number Processed</td>';
@@ -161,7 +177,7 @@ class FileImporterLog
     {
         $output = "";
 		
-		$arrayIDs = array('line', 'data', 'output', 'reason');
+		$arrayIDs = array('line', 'data', 'outcome', 'reason');
 		
 		// create a Sanitize object to 'clean' anything potentially harmful in the file
 		$clean = new Sanitize(); 
@@ -178,7 +194,7 @@ class FileImporterLog
 				// if this is the output item
 				if(isset($value[$id]) && $value[$id] != "")
 				{
-					if($id == "output") // add class to output
+					if($id == "outcome") // add class to outcome to color cell green / red
 					{
 						$output .= "<td class=\"".$value[$id]."\">".$value[$id]."</td>";
 					}else
@@ -219,46 +235,18 @@ class FileImporterLog
     // -------------------------------------------------------------------
     private function returnCSS()
     {
-        $output  = "";
-
-		$output  = "body{
-						text-align : center;
-					}";
-					
-		$output .= "h1{
-						margin-bottom : 30px;
-					}";
+		$output  = "body { text-align : center; }";
+		$output .= "h1 { margin-bottom : 30px; }";
+		$output .= "table { text-align : left; border-collapse: collapse; margin:auto; border: 1px solid #eee; margin-bottom : 30px; width: 100%;}";
+		$output .= "th, td { padding: 15px; border: 1px solid #eee; }";
+		$output .= "td { text-align: left; }";
+		$output .= "th { text-align: center; }";
+		$output .= "tr:nth-child(even) { background-color: #f2f2f2; }";
+		$output .= "td:nth-child(4) { max-width: 200px; }";
+		$output .= ".ERROR { background-color: #f2dede; }";
+		$output .= ".SUCCESS { background-color: #dff0d8; }";
+		$output .= ".container { max-width: 900px; margin:auto;}";
 		
-		$output .= "table{
-						text-align : left;
-						border-collapse: collapse;
-						margin:auto;
-						border: 1px solid #eee;
-						margin-bottom : 30px;
-					}";
-
-		$output .= "th, td{
-						padding: 15px;
-						border: 1px solid #eee;
-					}";
-		$output .= "td {
-    					text-align: left;
-					}";
-		$output .= "th {
-    					text-align: center;
-					}";
-		$output .= "tr:nth-child(even) {
-						background-color: #f2f2f2;
-					}";
-		$output .= "td:nth-child(4) {
-    					max-width: 200px;
-					}";
-		$output .= ".ERROR {
-						background-color: #f2dede;
-					}";
-		$output .= ".SUCCESS {
-						background-color: #dff0d8;
-					}";
         return $output;
     }
 
@@ -286,7 +274,7 @@ class FileImporterLog
 
 
     // -------------------------------------------------------------------
-    // check the filename if valid if they have provided one. Else, make
+    // check the filename is valid if they have provided one. Else, make
     // a default name
     // -------------------------------------------------------------------
     private function checkFilename($path)
@@ -306,10 +294,18 @@ class FileImporterLog
 		// do it manually	
 		$version = new VersionTest();
 		
-        if(!$version->isPHPGreaterOrEqualTo("5.2.0"))
+        if(!$version->isPHPGreaterOrEqualTo("5.2.0") || (!isset($filename) || $filename == ""))
         {
             // find the filename manually if this php version is < 5.2
             $filename = str_replace(".".$extension,"",$basename);
+        }
+
+        // if $filename is empty we don't have anything to work
+        // with so create a default name
+        if(!isset($filename) || $filename == "")
+        {
+            // parent function will call createFilename to create a default
+            return true; 
         }
 
         // ensure we have an HTML extension
@@ -321,8 +317,7 @@ class FileImporterLog
 			//  CREATE FOLDER
 			if(!mkdir($dirname, 0777, true))
 			{
-				$this->error =  "ERROR - Could not find / create 'log/' folder for the output report";
-				$this->createFilename();
+				// parent function will call createFilename to create a default
 				return false;	
 			}
         }
@@ -341,11 +336,18 @@ class FileImporterLog
 
         $this->filename = $path;
 
-        return;
+        if(isset($this->filename) && $this->filename != "")
+        {
+            return true;
+        }else
+        {
+            // parent function will call createFilename to create a default
+            return false;
+        }
 
     }
 	
-	
+
 
 }
 ?>
