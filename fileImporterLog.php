@@ -1,6 +1,7 @@
 <?php
 
 require_once('sanitize.php');
+require_once('versionTest.php');
 
 # ========================================================================#
 #
@@ -268,7 +269,7 @@ class FileImporterLog
     private function returnTitle()
     {
         $output  = "<h1>";
-        $output  .= "CSV Output Report: " . str_replace("log/", "", $this->filename);
+        $output  .= str_replace("log/", "", $this->filename);
         $output  .= "</h1>";
         return $output;
     }
