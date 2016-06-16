@@ -1,8 +1,6 @@
 <?php
 
 require_once('sanitize.php');
-require_once('connect.php');
-require_once ('versionTest.php');
 
 # ========================================================================#
 #
@@ -164,6 +162,9 @@ class FileImporterLog
 		
 		$arrayIDs = array('line', 'data', 'output', 'reason');
 		
+		// create a Sanitize object to 'clean' anything potentially harmful in the file
+		$clean = new Sanitize(); 
+		
 		// loop through 'outer' array which is each line in the CSV
         foreach ($data as &$value)
         {
@@ -181,7 +182,7 @@ class FileImporterLog
 						$output .= "<td class=\"".$value[$id]."\">".$value[$id]."</td>";
 					}else
 					{
-						$output .= "<td>".$value[$id]."</td>";
+						$output .= "<td>".$clean->clean($value[$id])."</td>";
 					}
 					
 				}else
