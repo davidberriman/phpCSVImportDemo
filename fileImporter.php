@@ -52,7 +52,7 @@ class FileImporter extends CSVFile
 	// -------------------------------------------------------------------
 	public function importFile()
 	{
-		// call parent function ti validate the CSV
+		// call parent function to validate the CSV
 		if(!$this->parseCSV())
 		{
 			return false;
@@ -104,6 +104,8 @@ class FileImporter extends CSVFile
 		// for the log message output		
 		// make a null value at position zero so the position in the array
 		// corresponds to the line number in the file
+		// ie. the log messaging will refer to the first line in the 
+		// CSV file as one and not zero (which would be the array position)
 		$this->processedRecords[0] = "";
 		
 		// create a Sanitize object to pass to the insertIntoDatabase metheod

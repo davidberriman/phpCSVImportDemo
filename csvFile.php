@@ -56,7 +56,7 @@ class CSVFile
 		// make the CSV file an array -> each line is an array item
 		$this->array = explode(PHP_EOL, $this->file);
 		
-		// check we have the expected datq
+		// check we have the expected data
 		if(!is_array( $this->array ))
 		{
 			$this-> error = "ERROR - file data could not be processed". PHP_EOL;
@@ -77,7 +77,7 @@ class CSVFile
 			$array = explode(",", $value);
 			
 			// check each line has commas so we have more than count() = 1. Also check it is not
-			// the last line becasue that may not have any values
+			// the last line becasue that may not have any values ie. is just a carrage return.
 			if((!is_array($array) || count($array) < 2) && $i != (count($this->array) - 1))
 			{
 				$this-> error = "ERROR - file data was not in CSV format. Line number ".$i." did not have commas ". PHP_EOL;

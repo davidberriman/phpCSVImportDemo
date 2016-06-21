@@ -77,7 +77,7 @@ ini_set('error_reporting', E_ALL);
 		$importLog = new FileImporterLog();
 				
 		// create a log file
-		if(($importLog->logResults( $importer->getResults(), $logname, $importer->numberProcessed, $importer->numberImported, $importer->numberFailed)) && !isset($importLog->error) && $importLog->error == "")
+		if($importLog->logResults( $importer->getResults(), $logname, $importer->numberProcessed, $importer->numberImported, $importer->numberFailed))
 		{
 			echo "----------------------------------------------".  PHP_EOL;
 			echo "A report was created in the log folder: ".  PHP_EOL;
