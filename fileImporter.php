@@ -1,5 +1,6 @@
 <?php
 
+require_once('csvFile.php');
 require_once('sanitize.php');
 require_once('connect.php');
 
@@ -14,20 +15,19 @@ require_once('connect.php');
 #
 #  Usage Example:
 #                     require_once("fileImporter.php");
-#                     $importer = new FileImporter();
-#                     $importer->importCSV($file);
+#                     $importer = new FileImporter($file, $test);
+#                     $importer->importFile();  // check this equals true
 #
 # ========================================================================#
 
-class FileImporter
+class FileImporter extends CSVFile
 {
 	// ------------------------------------------------------
 	// Class variables
 	// ------------------------------------------------------
-	private $array;
 	private $processedRecords;
+	private $test;
 	
-	public  $error;
 	public  $numberProcessed = 0;
 	public  $numberImported = 0;
 	public  $numberFailed = 0;
@@ -35,25 +35,40 @@ class FileImporter
 
 	
 	// -------------------------------------------------------------------
+	// Init class variables
+	// -------------------------------------------------------------------
+	public function __construct($file, $test)
+	{
+		// init parent class vars with the csv file
+		parent::__construct($file);
+		
+		$this->test = $test;
+		
+	}
+	
+	
+	// -------------------------------------------------------------------
 	// Import CSV file into database
 	// -------------------------------------------------------------------
-	public function importCSV($file, $test)
+	public function importFile()
 	{
-		// convert file to an array for easy manipulation
-		if(!$this->parseCSV($file))
+		// call parent function ti validate the CSV
+		if(!$this->parseCSV())
 		{
 			return false;
 		}
+				
+		// remove the first line which is a row of headings
+		unset($this->array[0]);
 		
 		// process array to import data
-		if(!$this->processCSVLines($test))
+		if(!$this->processCSVLines())
 		{
 			return false;
 		}
 		
 		return true;
 	}
-	
 	
 	
 	
@@ -65,44 +80,13 @@ class FileImporter
 		return $this->processedRecords;	
 	}
 	
-	
-	
-	// -------------------------------------------------------------------
-	// Convert the CSV file to an array
-	// -------------------------------------------------------------------
-	private function parseCSV($file)
-	{
-
-		// check we have a value to work with
-		if(!isset($file) )
-		{
-			$this-> error = "ERROR - file data was not found". PHP_EOL;
-			return false;	
-		}	
 		
-		// make the CSV file an array -> each line is an array item
-		$this->array = explode(PHP_EOL, $file);
-		
-		// check we have the expected datq
-		if(!is_array( $this->array ))
-		{
-			$this-> error = "ERROR - file data could not be converted". PHP_EOL;
-			return false;	
-		}
-		
-		// remove the first line which is a row of headings
-		unset($this->array[0]);
-		
-		return true;
-	}
-	
-	
 	
 	// -------------------------------------------------------------------
 	// Main driving function that loops through the array 
 	// and calls the processLine method for each line of the CSV file
 	// -------------------------------------------------------------------
-	private function processCSVLines($test)
+	private function processCSVLines()
 	{
 		// make connection to database
 		$Database = new Connect(); 
@@ -128,7 +112,7 @@ class FileImporter
 		
 		foreach ($this->array as &$value) 
 		{
-			$this->processLine($value, $mysqli, $clean, $test);
+			$this->processLine($value, $mysqli, $clean);
 		}
 		
 		// close databse connections
@@ -144,7 +128,7 @@ class FileImporter
 	// Process the values in each line of the CSV file and call the
 	// insertIntoDatabase method to insert into database if no errors are found 
 	// -------------------------------------------------------------------
-	private function processLine($value, $mysqli, $clean, $test)
+	private function processLine($value, $mysqli, $clean)
 	{
 		
 		// convert file contents into a php array
@@ -190,7 +174,7 @@ class FileImporter
 		}
 		
 		// do not process any further in test mode
-		if($test == "TEST=Y")
+		if($this->test == "TEST=Y")
 		{
 			if($process)
 			{

@@ -64,9 +64,9 @@ ini_set('error_reporting', E_ALL);
 	}
 	
 	
-	$importer = new FileImporter();
+	$importer = new FileImporter($file, $test);
 	
-	if($importer->importCSV($file, $test))
+	if($importer->importFile())
 	{
 		echo "The file data was sucessfully imported.". PHP_EOL;
 		echo "Number of lines processed      : ". $importer->numberProcessed .  PHP_EOL;
@@ -77,7 +77,7 @@ ini_set('error_reporting', E_ALL);
 		$importLog = new FileImporterLog();
 				
 		// create a log file
-		if($importLog->logResults( $importer->getResults(), $logname, $importer->numberProcessed, $importer->numberImported, $importer->numberFailed))
+		if(($importLog->logResults( $importer->getResults(), $logname, $importer->numberProcessed, $importer->numberImported, $importer->numberFailed)) && !isset($importLog->error) && $importLog->error == "")
 		{
 			echo "----------------------------------------------".  PHP_EOL;
 			echo "A report was created in the log folder: ".  PHP_EOL;
