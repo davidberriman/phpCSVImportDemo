@@ -6,8 +6,8 @@ The brief below was given to assess my php programming skills. This documentatio
 PHP Test
 
 In order to add some new and exci0ng products to the site, we need to process a CSV file from a supplier.
-This file contains product informa0on which we need to extract and insert into a database table.
-In addi0on, we need to apply some simple business rules to the data we import. A table already exists to receive this informa0on, but the table needs some tweaks in order to work correctly with this file.
+This file contains product information which we need to extract and insert into a database table.
+In addition, we need to apply some simple business rules to the data we import. A table already exists to receive this information, but the table needs some tweaks in order to work correctly with this file.
 
 The Solution
 
@@ -23,15 +23,16 @@ The supplier provides a stock level and price which we currently do not store. U
 
 Import Rules
 
-Any stock item which costs less that £5 and has less than 10 stock will not be imported. Any stock items which cost over £1000 will not be imported.
-Any stock item marked as discon0nued will be imported, but will have the discon0nued date set as the current date.
+Any stock item which costs less that £5 and has less than 10 stock will not be imported. 
+Any stock items which cost over £1000 will not be imported.
+Any stock item marked as discontinued will be imported, but will have the discontinued date set as the current date.
 Any items which fail to be inserted correctly need to be listed in a report at the end of the import process.
 
-Addi-onal Considerations
+Additional Considerations
 
 Because the data is from an external source, it may present certain issues. These include:
-1. Whether the data is correctly formaTed for CSV
-2. Whether the data is correctly formaTed for use with a database
-3. Poten0al data encoding issues or line termina0on problems
+1. Whether the data is correctly formatted for CSV
+2. Whether the data is correctly formatted for use with a database
+3. Potential data encoding issues or line termination problems
 4. Manual interference with the file which may invalidate some entries
 Either address these concerns in the code or indicate in your response how you would tackle these issues if you had more 0me to develop your script.
