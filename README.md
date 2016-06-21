@@ -35,4 +35,4 @@ Because the data is from an external source, it may present certain issues. Thes
 2. Whether the data is correctly formatted for use with a database
 3. Potential data encoding issues or line termination problems
 4. Manual interference with the file which may invalidate some entries
-Either address these concerns in the code or indicate in your response how you would tackle these issues if you had more 0me to develop your script.
+Either address these concerns in the code or indicate in your response how you would tackle these issues if you had more time to develop your script.
