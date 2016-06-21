@@ -23,7 +23,6 @@ class Connect
 	public $error;
 	
 		
-	// possible values for each number / units / tens / hundreds / thousands
 	private $host = 'localhost';
 	private $username = 'user';
 	private $password = 'password';
