@@ -77,7 +77,10 @@ class FileImporter extends CSVFile
 		}
 		
 		// get the column numbers for the required items
-		if(!$this->getColumnNumbers())
+		$this->getColumnNumbers();
+			
+		// check column headings have been found in the CSV file
+		if(!$this->checkColumnNumbers())
 		{
 			return false;
 		}
@@ -125,6 +128,19 @@ class FileImporter extends CSVFile
 		$this->columnCost = array_search($this->expectedColumnHeadings[4], $array); // expecte to be 4
 		$this->columnDiscontinued = array_search($this->expectedColumnHeadings[5], $array); // expecte to be 5
 		
+		return true;
+				
+	}
+	
+	
+	
+	
+	// -------------------------------------------------------------------
+	// Verify that the class column heading numbers have been set
+	// -------------------------------------------------------------------
+	private function checkColumnNumbers()
+	{
+		
 		$columnCode = $this->columnProductCode;
 		$columnName = $this->columnProductName;
 		$columnDescription = $this->columnProductDescription;
@@ -132,7 +148,12 @@ class FileImporter extends CSVFile
 		$columnCost = $this->columnCost;
 		$columnDiscontinued = $this->columnDiscontinued;
 		
-		$checkColumnHeadings = array($columnCode, $columnName, $columnDescription, $columnStock, $columnCost, $columnDiscontinued);
+		$checkColumnHeadings = array($columnCode, 
+									$columnName, 
+									$columnDescription, 
+									$columnStock, 
+									$columnCost, 
+									$columnDiscontinued);
 		
 		$i = 0; // used to provide error message
 		
@@ -147,7 +168,6 @@ class FileImporter extends CSVFile
 		}
 		
 		return true;
-		
 	}
 	
 		
@@ -274,6 +294,8 @@ class FileImporter extends CSVFile
 			$this->numberFailed++;
 			$this->makeOutputArray('outcome', "ERROR");
 		}
+		
+		return true;
 	}
 	
 	
