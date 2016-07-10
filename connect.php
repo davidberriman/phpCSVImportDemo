@@ -22,13 +22,10 @@ class Connect
 	private $connection;
 	public $error;
 	
-		
-	// possible values for each number / units / tens / hundreds / thousands
 	private $host = 'localhost';
 	private $username = 'wren';
 	private $password = 'password';
 	private $database = 'wrenTest';
-
 
 	// ------------------------------------
 	// Connect to database 

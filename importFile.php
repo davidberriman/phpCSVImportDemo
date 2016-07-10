@@ -16,7 +16,7 @@ ini_set('error_reporting', E_ALL);
 #
 #  Example:
 #  To run this script enter php then the script name in terminal followed by the import file name (with full directory)
-#  eg:  $ php importFile.php Desktop/WrenDemo/stock.csv
+#  eg:  $ php importFile.php Desktop/WrenDemo/stock.csv TEST=Y
 #
 #  After the script has finished it will create an HTML file with the output results in the same directory as the script
 #
