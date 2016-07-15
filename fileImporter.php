@@ -110,22 +110,25 @@ class FileImporter extends CSVFile
 
 	// -------------------------------------------------------------------
 	// Set the class column heading numbers - this is incase they change
-	// with future files
+	// with future files eg. 'Product Code' will be column 0
 	// -------------------------------------------------------------------
 	private function getColumnNumbers()
 	{
 		// get the first item from CSVLineArray (which is the list of column titles)
-		$array = explode(",", $this->CSVLineArray[0]);
+		$ColumnTitlesArray = explode(",", $this->CSVLineArray[0]);
 		
 		// trim white space from begining and end of each item in array
-		$array = array_map('trim',$array);
+		$ColumnTitlesArray = array_map('trim',$ColumnTitlesArray);
 				
-		$this->columnProductCode = array_search($this->expectedColumnHeadings[0], $array); // expecte to be 0
-		$this->columnProductName = array_search($this->expectedColumnHeadings[1], $array); // expecte to be 1
-		$this->columnProductDescription = array_search($this->expectedColumnHeadings[2], $array); // expecte to be 2
-		$this->columnStock = array_search($this->expectedColumnHeadings[3], $array); // expecte to be 3
-		$this->columnCost = array_search($this->expectedColumnHeadings[4], $array); // expecte to be 4
-		$this->columnDiscontinued = array_search($this->expectedColumnHeadings[5], $array); // expecte to be 5
+		// Search the $ColumnTitlesArray for each of the column headings eg 'Product Code'
+		// and assign the class properties the array number of each heading - this means
+		// future changes to the file format will still process the correct columns 
+		$this->columnProductCode = array_search($this->expectedColumnHeadings[0], $ColumnTitlesArray); // expecte to be 0
+		$this->columnProductName = array_search($this->expectedColumnHeadings[1], $ColumnTitlesArray); // expecte to be 1
+		$this->columnProductDescription = array_search($this->expectedColumnHeadings[2], $ColumnTitlesArray); // expecte to be 2
+		$this->columnStock = array_search($this->expectedColumnHeadings[3], $ColumnTitlesArray); // expecte to be 3
+		$this->columnCost = array_search($this->expectedColumnHeadings[4], $ColumnTitlesArray); // expecte to be 4
+		$this->columnDiscontinued = array_search($this->expectedColumnHeadings[5], $ColumnTitlesArray); // expecte to be 5
 		
 		return true;
 				
