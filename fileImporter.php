@@ -26,17 +26,12 @@ class FileImporter extends CSVFile
 	// Class variables
 	// ------------------------------------------------------
 	private $processedRecords;
-<<<<<<< HEAD
 	private $testMode;  // either "TEST=Y" or "TEST=N"  // stops saving to database
-=======
-	private $test;
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 	
 	public  $numberProcessed = 0;
 	public  $numberImported = 0;
 	public  $numberFailed = 0;
-	
-<<<<<<< HEAD
+
 	 // for import rules
 	const MAX_PRODUCT_COST = 1000;  // don't import above this threshold
 	const MIN_PRODUCT_STOCK = 10;   // don't import if stock is < 10 and price < 5
@@ -52,10 +47,7 @@ class FileImporter extends CSVFile
 	
 	// column titles ecpected in the csv file
 	private $expectedColumnHeadings = array('Product Code', 'Product Name', 'Product Description', 'Stock', 'Cost in GBP', 'Discontinued');
-	
-=======
 
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 	
 	// -------------------------------------------------------------------
 	// Init class variables
@@ -64,16 +56,11 @@ class FileImporter extends CSVFile
 	{
 		// init parent class vars with the csv file
 		parent::__construct($file);
-		
-<<<<<<< HEAD
+	
 		$this->testMode = $test;
 		
 		// set timezone
-		date_default_timezone_set('Europe/London');
-=======
-		$this->test = $test;
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
-		
+		date_default_timezone_set('Europe/London');		
 	}
 	
 	
@@ -82,16 +69,12 @@ class FileImporter extends CSVFile
 	// -------------------------------------------------------------------
 	public function importFile()
 	{
-<<<<<<< HEAD
-		// call parent function ti validate the CSV
-=======
+
 		// call parent function to validate the CSV
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 		if(!$this->parseCSV())
 		{
 			return false;
 		}
-<<<<<<< HEAD
 		
 		// get the column numbers for the required items
 		$this->getColumnNumbers();
@@ -104,11 +87,6 @@ class FileImporter extends CSVFile
 				
 		// remove the first line which is a row of headings
 		unset($this->CSVLineArray[0]);
-=======
-				
-		// remove the first line which is a row of headings
-		unset($this->array[0]);
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 		
 		// process array to import data
 		if(!$this->processCSVLines())
@@ -129,9 +107,7 @@ class FileImporter extends CSVFile
 		return $this->processedRecords;	
 	}
 	
-<<<<<<< HEAD
-	
-	
+
 	// -------------------------------------------------------------------
 	// Set the class column heading numbers - this is incase they change
 	// with future files
@@ -193,12 +169,7 @@ class FileImporter extends CSVFile
 		return true;
 	}
 	
-		
-	
-	
-=======
-		
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
+
 	
 	// -------------------------------------------------------------------
 	// Main driving function that loops through the array 
@@ -214,34 +185,18 @@ class FileImporter extends CSVFile
 			$this-> error = "ERROR - could not connect to the database". PHP_EOL.  $Database->error. PHP_EOL;
 			return false;
 		}
-<<<<<<< HEAD
-						
-=======
-		
-		// set timezone
-		date_default_timezone_set('Europe/London');
-				
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
+
 		// processedRecords is an array that saves all the processing information
 		// for the log message output		
 		// make a null value at position zero so the position in the array
 		// corresponds to the line number in the file
-<<<<<<< HEAD
-=======
-		// ie. the log messaging will refer to the first line in the 
-		// CSV file as one and not zero (which would be the array position)
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 		$this->processedRecords[0] = "";
 		
 		// create a Sanitize object to pass to the insertIntoDatabase metheod
 		// in the loop - saves creating a new object everytime
 		$clean = new Sanitize(); 
 		
-<<<<<<< HEAD
 		foreach ($this->CSVLineArray as &$value) 
-=======
-		foreach ($this->array as &$value) 
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 		{
 			$this->processLine($value, $mysqli, $clean);
 		}
@@ -305,11 +260,7 @@ class FileImporter extends CSVFile
 		}
 		
 		// do not process any further in test mode
-<<<<<<< HEAD
 		if($this->testMode == "TEST=Y")
-=======
-		if($this->test == "TEST=Y")
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 		{
 			if($process)
 			{
@@ -340,11 +291,8 @@ class FileImporter extends CSVFile
 			$this->numberFailed++;
 			$this->makeOutputArray('outcome', "ERROR");
 		}
-<<<<<<< HEAD
 		
 		return true;
-=======
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 	}
 	
 	
@@ -358,36 +306,22 @@ class FileImporter extends CSVFile
 		// Any stock item which costs less that £5 and has less than 10 stock will not be imported. 
 		// Any stock items which cost over £1000 will not be imported.
 		
-<<<<<<< HEAD
 		if(isset($array[$this->columnCost]))
 		{
 			$productCost  = $array[$this->columnCost];
 			if($productCost > self::MAX_PRODUCT_COST)
-=======
-		if(isset($array[4]))
-		{
-			$productCost  = $array[4];
-			if($productCost > 1000)
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
+
 			{
 				$this->makeOutputArray('reason', "Does not meet criteria for import - item cost: {$productCost} is greater than 1000");
 				return false;
 			}
 		}
 		
-<<<<<<< HEAD
 		if(isset($array[$this->columnStock]) && isset($array[$this->columnCost]))
 		{
 			$productStock = $array[$this->columnStock];
 			$productCost  = $array[$this->columnCost];
 			if($productStock < self::MIN_PRODUCT_STOCK && $productCost < self::MIN_STOCK_PRICE)
-=======
-		if(isset($array[3]) && isset($array[4]))
-		{
-			$productStock = $array[3];
-			$productCost  = $array[4];
-			if($productStock < 10 && $productCost < 5)
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 			{
 				$this->makeOutputArray('reason', "Does not meet criteria for import - Item stock: {$productStock} & item cost: {$productCost} (costs < 5 & stock < 10)");
 				return false;
@@ -404,38 +338,23 @@ class FileImporter extends CSVFile
 	private function isValid($array)
 	{
 		// check item 3 is int 
-<<<<<<< HEAD
 		if(isset($array[$this->columnStock]))
 		{
 			// item is really a string so ctype_digit will check that it is just numbers 
 			// in that string eg. is_int
 			if(!ctype_digit($array[$this->columnStock]))
-=======
-		if(isset($array[3]))
-		{
-			// item is really a string so ctype_digit will check that it is just numbers 
-			// in that string eg. is_int
-			if(!ctype_digit($array[3]))
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
+
 			{
 				$this->makeOutputArray('reason', "Data in column 4 was not an integer");
 				return false;
 			}
-			
 		}
 		
 		// check item 4 is numeric
-<<<<<<< HEAD
 		if( isset($array[$this->columnCost]))
 		{
 			// check item 4 is float				
 			if( !is_numeric($array[$this->columnCost]) )
-=======
-		if( isset($array[4]))
-		{
-			// check item 4 is float				
-			if( !is_numeric($array[4]) )
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 			{
 				// could make this error message a less technical term if necessary
 				$this->makeOutputArray('reason', "Data in column 5 was not a float");
@@ -443,11 +362,7 @@ class FileImporter extends CSVFile
 			}
 		}
 		
-<<<<<<< HEAD
 		$numbers = array($this->columnProductCode, $this->columnProductName, $this->columnProductDescription, $this->columnDiscontinued);
-=======
-		$numbers = array(0, 1, 2, 5);
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 		
 		// check remaining items are strings
 		foreach ($numbers as &$value) 

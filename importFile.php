@@ -16,11 +16,7 @@ ini_set('error_reporting', E_ALL);
 #
 #  Example:
 #  To run this script enter php then the script name in terminal followed by the import file name (with full directory)
-<<<<<<< HEAD
 #  eg:  $ php importFile.php Desktop/WrenDemo/stock.csv TEST=Y
-=======
-#  eg:  $ php importFile.php Desktop/WrenDemo/stock.csv
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 #
 #  After the script has finished it will create an HTML file with the output results in the same directory as the script
 #
@@ -81,11 +77,8 @@ ini_set('error_reporting', E_ALL);
 		$importLog = new FileImporterLog();
 				
 		// create a log file
-<<<<<<< HEAD
+
 		if(($importLog->logResults( $importer->getResults(), $logname, $importer->numberProcessed, $importer->numberImported, $importer->numberFailed)) && !isset($importLog->error) && $importLog->error == "")
-=======
-		if($importLog->logResults( $importer->getResults(), $logname, $importer->numberProcessed, $importer->numberImported, $importer->numberFailed))
->>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 		{
 			echo "----------------------------------------------".  PHP_EOL;
 			echo "A report was created in the log folder: ".  PHP_EOL;
