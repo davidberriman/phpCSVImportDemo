@@ -45,7 +45,7 @@ class FileImporter extends CSVFile
 	private  $columnCost;
 	private  $columnDiscontinued;
 	
-	// column titles ecpected in the csv file
+	// column titles expected in the csv file
 	private $expectedColumnHeadings = array('Product Code', 'Product Name', 'Product Description', 'Stock', 'Cost in GBP', 'Discontinued');
 
 	
@@ -164,9 +164,11 @@ class FileImporter extends CSVFile
 		{
 			if($title === false)
 			{
-				$this-> error = "ERROR - could not find column heading: (".$this->expectedColumnHeadings[$i].")". PHP_EOL;
+				$this-> error = "ERROR - could not find column heading: (".$this->expectedColumnHeadings[$i].") in the CSV file". PHP_EOL;
 				return false;
 			}
+			
+			$i++;
 		}
 		
 		return true;
