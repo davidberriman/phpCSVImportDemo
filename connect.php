@@ -22,10 +22,19 @@ class Connect
 	private $connection;
 	public $error;
 	
+<<<<<<< HEAD
 	private $host = 'localhost';
 	private $username = 'wren';
 	private $password = 'password';
 	private $database = 'wrenTest';
+=======
+		
+	private $host = 'localhost';
+	private $username = 'user';
+	private $password = 'password';
+	private $database = 'phpDemoCSVImport';
+
+>>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 
 	// ------------------------------------
 	// Connect to database 
@@ -33,7 +42,10 @@ class Connect
 	public function __construct() 
 	{
 		
+<<<<<<< HEAD
 		//$this->connection = new mysqli($this->host, $this->username, $this->password, $this->database);
+=======
+>>>>>>> 17e489a2281d2fca36321e95f6fa10673f7dae25
 		$this->connection = mysqli_connect($this->host, $this->username, $this->password, $this->database);
 		
 		// Error handling.
